@@ -14,9 +14,7 @@ import { env } from 'process';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot(
-      'mongodb+srv://kareemchatter:kareemchatter1@chatterdb.1szv5ev.mongodb.net/',
-    ),
+    MongooseModule.forRoot('import.meta.env.MONGO_URI'),
     UserModule,
     BookModule,
   ],
