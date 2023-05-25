@@ -5,6 +5,7 @@ import Home from "./pages/home/Home";
 import RequiredAuth from "./components/shared/RequiredAuth";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import Landing from "./pages/landing/Landing";
 
 const privateRoutes = [
   {
@@ -26,9 +27,9 @@ function App() {
           />
         );
       })}
-
-      <Route path='login' element={<Login />} />
-      <Route path='register' element={<Register />} />
+      <Route path='landing' element={<Landing />} />
+      <Route path='auth/:id' element={<Login />} />
+      {/* <Route path='auth' element={<Register />} /> */}
     </Routes>
   );
 }
