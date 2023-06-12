@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth/auth.module';
+import { FeedsModule } from './feeds/feeds.module';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CommentsModule } from './comments/comments.module';
 import { UserModule } from './user/user.module';
-import { BookService } from './book/book.service';
-import { BookModule } from './book/book.module';
-import { ConfigModule } from '@nestjs/config';
-import { env } from 'process';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -14,11 +16,14 @@ import { env } from 'process';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot('import.meta.env.MONGO_URI'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
+    AuthModule,
+    FeedsModule,
+    CommentsModule,
     UserModule,
-    BookModule,
+    EmailModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BookService],
+  providers: [AppService, CloudinaryService],
 })
 export class AppModule {}
