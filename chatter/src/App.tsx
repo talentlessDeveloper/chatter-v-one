@@ -1,16 +1,34 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-import Home from "./pages/home/Home";
+import Analytics from "./components/home/Analytics";
+import AddPost from "./components/page/AddPost";
+import Layout from "./components/shared/Layout";
 import RequiredAuth from "./components/shared/RequiredAuth";
 import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
+import Home from "./pages/home/Home";
 import Landing from "./pages/landing/Landing";
 
 const privateRoutes = [
   {
     path: "/",
     component: <Home />,
+  },
+  {
+    path: "/featured",
+    component: <Home />,
+  },
+  {
+    path: "/recent",
+    component: <Home />,
+  },
+  {
+    path: "/analytics",
+    component: <Analytics />,
+  },
+  {
+    path: "/create",
+    component: <AddPost />,
   },
 ];
 
@@ -22,8 +40,10 @@ function App() {
           <Route
             key={idx}
             path={path}
-            //@ts-expect-error not a jsx
-            element={<RequiredAuth children={component} />}
+            element={
+              //@ts-expect-error not a jsx
+              <RequiredAuth children={<Layout children={component} />} />
+            }
           />
         );
       })}

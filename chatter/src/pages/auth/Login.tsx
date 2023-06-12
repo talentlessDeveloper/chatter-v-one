@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   function renderScreen(step: string) {
-    const getPath = step.split("/")[2];
+    const getPath = step.split("/")[2]; // register | login
     console.log(getPath);
     switch (getPath) {
       case "login":

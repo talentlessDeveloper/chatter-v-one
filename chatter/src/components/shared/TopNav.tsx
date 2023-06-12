@@ -29,7 +29,7 @@ const TopNav = () => {
         ))}
       </Box>
       <Box className='flex items-center gap-10'>
-        <Button variant='outlined' onClick={() => navigate("/auth")}>
+        <Button variant='outlined' onClick={() => navigate("/auth/login")}>
           Log in
         </Button>
         <Button

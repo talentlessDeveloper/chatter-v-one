@@ -4,7 +4,6 @@ interface HttpParams {
   BASE_URL: string;
   url: string;
   method?: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
-  headers: object;
   body?: unknown | any;
   needToken?: boolean;
 }
@@ -39,13 +38,17 @@ export const httpRequest = async (params: HttpParams) => {
       redirect: "follow",
       body: JSON.stringify(body),
       headers: header,
+      // mode: "no-cors",
     };
 
     const response = await fetch(`${BASE_URL}${url}`, requestOption);
-    const result = await response.json();
+
+    const result = await response.text();
+
     const res = JSON.parse(result);
+
     return res;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 };
