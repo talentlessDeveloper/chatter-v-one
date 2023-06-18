@@ -1,57 +1,130 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
+  Param,
   Post,
-  HttpStatus,
+  Put,
+  Request,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { SignUpDto } from 'src/dto/signUpDto';
-import { LoginDto } from 'src/dto/loginDto';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import * as path from 'path';
+import { User } from 'src/schemas/user.schema';
+import { CreateUserDto, UpdateUserDto } from 'src/user/dto/user.dto';
+import { UserService } from 'src/user/user.service';
+import { AuthService } from './auth.service';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
-  @Post('/signup')
-  signUp(@Body() signUpDto: SignUpDto): Promise<{ token: string }> {
-    return this.authService.signUp(signUpDto);
+  @Post('register')
+  regsiterUser(@Body() user: CreateUserDto): Promise<User> {
+    return this.userService.addUser(user);
+  }
+
+  @Get('verify/:userId/:verificationToken')
+  async verifyUser(
+    @Param('userId') userId: string,
+    @Param('verificationToken') verificationToken: string,
+    @Res() res: Response,
+  ) {
+    const result = await this.authService.verifyEmail(
+      userId,
+      verificationToken,
+    );
+    if (result.verified) {
+      res.sendFile(
+        path.join(
+          __dirname,
+          '../view/emailVerification/emailVerifySuccess.html',
+        ),
+      );
+    } else {
+      res.sendFile(
+        path.join(__dirname, '../view/emailVerification/emailVerifyFail.html'),
+      );
+    }
   }
 
   @UseGuards(AuthGuard('local'))
-  @Post('/login')
-  async login(
-    @Res() response,
-    @Body() loginDto: LoginDto,
-  ): Promise<{ token: string; user: any }> {
+  @Post('login')
+  async login(@Request() req, @Res() res: Response) {
     try {
-      const user = await this.authService.login(loginDto);
-
-      if (user) {
-        return response.status(HttpStatus.OK).json({
-          data: user,
-          message: 'login successful',
-          status: 'success',
-        });
-      } else {
-        return response.status(HttpStatus.BAD_REQUEST).json({
-          error: 'unauthorized email and password',
-          message: user,
-          status: 'error',
-        });
-      }
+      const response = await this.authService.login(req.user);
+      return res.status(201).json(response);
     } catch (error) {
-      console.log(error, 'backend');
-      return response
-        .status(HttpStatus.BAD_REQUEST)
-        .json({
-          error: true,
-          message: error.message,
-          status: 'error',
-        })
-        .send();
+      return res.status(401).json({ message: error.message });
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('whoami')
+  async getProfile(@Request() req) {
+    return req.user;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('delete')
+  async deleteUser(@Request() req, @Res() res: Response) {
+    try {
+      const deletedUser = await this.userService.deleteUser(req.user.id);
+      return res.status(200).json(deletedUser);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('update')
+  async updateUser(
+    @Request() req,
+    @Res() res: Response,
+    @Body() user: UpdateUserDto,
+  ) {
+    try {
+      const updatedUser = await this.userService.updateUser(req.user.id, user);
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  @Post('resetpassword')
+  async resetPasswordS(@Body() body: any, @Res() res: Response) {
+    try {
+      const result = await this.authService.receiveEmailForPasswordReset(
+        body.email,
+      );
+      return res.status(200).json({ message: result.message });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  @Post('/resetpassword/:userId/:resetToken')
+  async resetPasswordE(
+    @Body() body: any,
+    @Res() res: Response,
+    @Param('userId') userId: string,
+    @Param('resetToken') resetToken: string,
+  ) {
+    try {
+      const result = await this.authService.resetPassword(
+        userId,
+        resetToken,
+        body.password,
+      );
+      return res.status(200).json({ message: result.message });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   }
 }

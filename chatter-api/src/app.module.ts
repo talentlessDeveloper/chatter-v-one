@@ -4,11 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { FeedsModule } from './feeds/feeds.module';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { CommentsModule } from './comments/comments.module';
+import { PostModule } from './post/post.module';
+import { CommentModule } from './comment/comment.module';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -16,14 +16,17 @@ import { EmailModule } from './email/email.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
-    AuthModule,
-    FeedsModule,
-    CommentsModule,
+    MongooseModule.forRoot(
+      'mongodb+srv://badmus:olawole27@cluster1.ondgqvx.mongodb.net/',
+    ),
     UserModule,
+    AuthModule,
+    CloudinaryModule,
     EmailModule,
+    PostModule,
+    CommentModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryService],
+  providers: [AppService],
 })
 export class AppModule {}

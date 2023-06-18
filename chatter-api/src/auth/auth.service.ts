@@ -1,83 +1,89 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from 'src/schema/user.schema';
-import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from 'src/dto/signUpDto';
+import { Injectable } from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
-import { LoginDto } from 'src/dto/loginDto';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/schemas/user.schema';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name)
-    private userModel: Model<User>,
+    private userService: UserService,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
-  async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {
-    const { firstName, lastName, email, password, role } = signUpDto;
-    console.log(email, '123');
-    if (!email) {
-      throw new UnauthorizedException('user email is required to sign up');
-    }
-    if (!password) {
-      throw new UnauthorizedException('user password is required to sign up');
-    }
-    if (!firstName) {
-      throw new UnauthorizedException('user firstName is required to sign up');
-    }
-    if (!lastName) {
-      throw new UnauthorizedException('user lastName is required to sign up');
-    }
-    if (!role) {
-      throw new UnauthorizedException('Role is required');
-    }
-    const isExist = await this.userModel.findOne({ email });
-    if (isExist?.email === email) {
-      throw new UnauthorizedException('user already exists');
-    }
+  async verifyEmail(userId: string, verificationToken: string): Promise<User> {
+    try {
+      const user = await this.userService.findById(userId);
 
-    const hashPassword = await bcrypt.hash(password, 10);
-    const user = await this.userModel.create({
-      firstName,
-      lastName,
-      email,
-      role,
-      password: hashPassword,
-    });
-
-    const token = this.jwtService.sign({
-      id: user.id,
-      name: user.email,
-      role: user.role,
-    });
-    return { token };
+      if (user.verificationToken === verificationToken) {
+        user.verified = true;
+        const updatedUser = await this.userService.changeVerifyToTrue(userId);
+        return updatedUser;
+      } else if (user.verificationToken !== verificationToken) {
+        return user;
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async login(loginDto: LoginDto): Promise<{ token: string; user: any }> {
-    const { password, email } = loginDto;
-
-    if (!email) {
-      throw new UnauthorizedException('invalid email and password');
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userService.getByEmail(email);
+    let isValid;
+    if (user) {
+      isValid = await bcrypt.compare(password, user.password);
     }
-
-    const user = await this.userModel.findOne({ email });
-
-    if (!user) {
-      throw new UnauthorizedException('invalid email and password');
+    if (isValid) {
+      return user;
     }
+    return null;
+  }
 
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
+  async login(user: any) {
+    if (!user.verified) throw Error('Verify Email');
+    const payload = { userId: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 
-    if (!isPasswordMatched) {
-      throw new UnauthorizedException('invalid email and password');
+  async receiveEmailForPasswordReset(email: string) {
+    try {
+      const user = await this.userService.getByEmail(email);
+      if (user) {
+        const resetToken = await this.userService.createPasswordResetToken(
+          user.id,
+        );
+        this.emailService.sendPasswordResetEmail(
+          email,
+          resetToken.userId,
+          resetToken.token,
+        );
+      } else {
+        throw Error('The provided email is invalid!');
+      }
+      return { message: 'Password Reset Link Has Been Sent!' };
+    } catch (error) {
+      throw error;
     }
+  }
 
-    const token = this.jwtService.sign({
-      id: user.id,
-      name: user.email,
-    });
-    return { token, user };
+  async resetPassword(userId: string, resetTokenP: string, password: string) {
+    try {
+      const resetToken = await this.userService.verifyPasswordResetToken(
+        userId,
+        resetTokenP,
+      );
+      if (!resetToken) {
+        throw Error('The provided token is invalid!');
+      }
+      await this.userService.changePassword(userId, password);
+      await this.userService.deletePasswordResetToken(resetTokenP);
+      return { message: 'Your password was successfully changed!' };
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -8,10 +8,10 @@ export class CloudinaryService {
       image,
       { upload_preset: 'pv5ptgle' },
       (error, result) => {
-        if (error) {
-          return error;
-        } else {
+        if (result) {
           return result.url;
+        } else {
+          return error;
         }
       },
     );
