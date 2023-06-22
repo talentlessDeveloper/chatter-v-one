@@ -41,16 +41,9 @@ export class AuthController {
       verificationToken,
     );
     if (result.verified) {
-      res.sendFile(
-        path.join(
-          __dirname,
-          '../view/emailVerification/emailVerifySuccess.html',
-        ),
-      );
+      return res.status(201).json(result);
     } else {
-      res.sendFile(
-        path.join(__dirname, '../view/emailVerification/emailVerifyFail.html'),
-      );
+      return res.status(401).json(result); // to be corrected to better response
     }
   }
 
@@ -58,7 +51,8 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Res() res: Response) {
     try {
-      const response = await this.authService.login(req.user);
+      const response = await this.authService.login(req.body);
+      console.log(response);
       return res.status(201).json(response);
     } catch (error) {
       return res.status(401).json({ message: error.message });

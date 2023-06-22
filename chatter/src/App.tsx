@@ -49,7 +49,7 @@ function App() {
       })}
       <Route path="landing" element={<Landing />} />
       <Route path="auth/:id" element={<Login />} />
-      <Route path="auth" element={<VerifyUser />} />
+      <Route path="verify/:userid/:token" element={<VerifyUser />} />
     </Routes>
   );
 }
