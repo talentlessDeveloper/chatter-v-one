@@ -45,3 +45,29 @@ export const register = createAsyncThunk(
     }
   }
 );
+
+type Iverify = {
+  userId: string;
+  token: string;
+};
+
+export const VerifyingUser = createAsyncThunk(
+  "users/verify-user",
+  async (data: Iverify, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const result = await httpRequest({
+        BASE_URL: BASE_URL,
+        url: `auth/verify/${data?.userId}/${data?.token}`,
+        method: "GET",
+        needToken: false,
+      });
+      console.log(result, "result");
+      if (result.status === "error") {
+        return rejectWithValue(result.message);
+      }
+      return fulfillWithValue(result);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);

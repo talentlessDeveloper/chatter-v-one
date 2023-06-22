@@ -1,13 +1,13 @@
-import { Route, Routes } from "react-router-dom";
 import "./App.css";
-
 import Analytics from "./components/home/Analytics";
 import AddPost from "./components/page/AddPost";
 import Layout from "./components/shared/Layout";
 import RequiredAuth from "./components/shared/RequiredAuth";
 import Login from "./pages/auth/Login";
+import VerifyUser from "./pages/auth/VeryfyUser";
 import Home from "./pages/home/Home";
 import Landing from "./pages/landing/Landing";
+import { Route, Routes } from "react-router-dom";
 
 const privateRoutes = [
   {
@@ -47,9 +47,9 @@ function App() {
           />
         );
       })}
-      <Route path='landing' element={<Landing />} />
-      <Route path='auth/:id' element={<Login />} />
-      {/* <Route path='auth' element={<Register />} /> */}
+      <Route path="landing" element={<Landing />} />
+      <Route path="auth/:id" element={<Login />} />
+      <Route path="auth" element={<VerifyUser />} />
     </Routes>
   );
 }
