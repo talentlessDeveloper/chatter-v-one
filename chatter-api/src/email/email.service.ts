@@ -50,7 +50,7 @@ export class EmailService {
       text: 'Email Verification',
       html: `<p>Dear User, please verify your email for Chatter project.</p>
         <p>
-            This <a href="http://localhost:8080/${userId}/${userToken}">link</a> will verify your email address.
+            This <a href="http://localhost:8080/verify/${userId}/${userToken}">link</a> will verify your email address.
         </p>
         <p>
             If you did not registered on Chatter project, you can just ignore this message and do not click on the link!
