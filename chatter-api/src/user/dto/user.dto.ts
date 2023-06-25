@@ -1,4 +1,6 @@
 export class CreateUserDto {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;
@@ -7,6 +9,8 @@ export class CreateUserDto {
 }
 
 export class UpdateUserDto {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password: string;

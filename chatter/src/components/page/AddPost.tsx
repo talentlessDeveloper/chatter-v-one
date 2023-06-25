@@ -1,57 +1,116 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { convertToRaw, EditorState } from "draft-js";
 import React, { useEffect, useState } from "react";
 import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-const samplePost =
-  " Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum quia error omnis, earum incidunt similique ipsum nihil quidem fuga! Repudiandae veritatis voluptatum dolorem nisi. Culpa at, doloremque perspiciatis expedita qui enim hic quos consectetur rem, unde voluptate. Eveniet, placeat quod. ";
+import ControlledTextInput from "../shared/textInput/ControlledTextInput";
+import { useForm } from "react-hook-form";
+import { IcreateFeeds } from "../../constant/validation/types";
+import {
+  feedDefaultValues,
+  feedsResolver,
+} from "../../constant/validation/validation";
+import { createFeeds } from "../../constant/redux/feeds/feedApi";
+import { useAppDispatch } from "../../constant/redux/hooks/index";
 
 const AddPost = () => {
+  const dispatch = useAppDispatch();
   const [post, setPost] = useState(() => EditorState.createEmpty());
-  // const [postState, setPostState] = useState("");
-  const [postMarkup, setPostMarkup] = useState("");
 
-  useEffect(() => {
-    setPost(() => EditorState.createEmpty());
-  }, []);
+  // const [postMarkup, setPostMarkup] = useState("");
+
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+    watch,
+  } = useForm<IcreateFeeds>({
+    defaultValues: feedDefaultValues,
+    resolver: feedsResolver,
+  });
+
+  const { image } = watch();
+
+  // console.log(errors);
 
   const handlePost = (post: any) => {
     setPost(post);
     const post_text = draftToHtml(convertToRaw(post.getCurrentContent()));
-    setPostMarkup(post_text);
+    // setPostMarkup(post_text);
+    setValue("content", post_text);
   };
 
-  console.log(postMarkup);
+  const onSubmit = async (values: IcreateFeeds) => {
+    console.log(values);
+    const res = await dispatch(createFeeds(values));
+    console.log(res);
+  };
+
   return (
-    <Box className='w-11/12 p-2 border-2 border-solid border-gray-300 h-full mx-auto my-5'>
-      <Box className='w-full flex items-center justify-end mb-5'>
-        <Button variant='contained' className='bg-violet-700'>
+    <Box className="w-11/12 p-2 border-2 border-solid border-gray-300 h-full mx-auto my-5">
+      <Box className="w-full flex items-center justify-end mb-5">
+        <Button
+          variant="contained"
+          className="bg-violet-700"
+          onClick={handleSubmit(onSubmit)}
+        >
           Publish
         </Button>
       </Box>
-      <Editor
-        onEditorStateChange={handlePost}
-        editorState={post}
-        toolbar={{
-          emoji: {
-            emoji: true,
-          },
-          image: {
-            uploadCallback: () => {},
-            alt: { present: true, mandatory: true },
-          },
-          font: {
-            family: {
-              options: ["Arial", "Georgia", "Impact", "Tahoma", "Verdana"],
+      <Box>
+        <ControlledTextInput control={control} name="title" label="Title" />
+
+        <Box>
+          <Button
+            variant="outlined"
+            component="label"
+            className="w-full h-[50px] mb-7"
+          >
+            <p>Upload Image for post</p>
+            <input
+              hidden
+              accept="image/*"
+              multiple
+              type="file"
+              onChange={(e) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const uploadedImage = reader.result;
+                  setValue("image", uploadedImage);
+                  // console.log(uploadedImage);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+              }}
+            />
+          </Button>
+
+          {image && <Box component="img" src={image} />}
+        </Box>
+      </Box>
+
+      <Box>
+        <Typography variant="body1">Content</Typography>
+        <Editor
+          onEditorStateChange={handlePost}
+          editorState={post}
+          toolbar={{
+            emoji: {
+              emoji: true,
             },
-          },
-          heading: {
-            options: [1, 2, 3, 4, 5, 6],
-          },
-        }}
-      />
+
+            font: {
+              family: {
+                options: ["Arial", "Georgia", "Impact", "Tahoma", "Verdana"],
+              },
+            },
+            heading: {
+              options: [1, 2, 3, 4, 5, 6],
+            },
+          }}
+        />
+      </Box>
     </Box>
   );
 };

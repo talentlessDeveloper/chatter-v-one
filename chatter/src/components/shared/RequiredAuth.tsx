@@ -8,8 +8,8 @@ type IrequiredAuth = {
 
 const RequiredAuth = ({ children }: IrequiredAuth) => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
-  if (!isLoggedIn) return <Navigate to='/login' />;
-  return isLoggedIn ? children : <Navigate to='/login' />;
+  if (!isLoggedIn) return <Navigate to="/auth/login" />;
+  return isLoggedIn ? children : <Navigate to="/authlogin" />;
 };
 
 export default RequiredAuth;

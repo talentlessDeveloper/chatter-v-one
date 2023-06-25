@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ILogin, ISignUp } from "./types";
+import { IcreateFeeds, ILogin, ISignUp } from "./types";
 
 export const loginDefaultValues: ILogin = {
   email: "",
@@ -35,3 +35,16 @@ const registerSchema = yup.object({
 });
 
 export const registerResolver = yupResolver(registerSchema);
+
+export const feedDefaultValues: IcreateFeeds = {
+  content: "",
+  image: "",
+  title: "",
+};
+
+const feedsSchema = yup.object({
+  content: yup.string().required("Content is required"),
+  title: yup.string().required("Title is required"),
+});
+
+export const feedsResolver = yupResolver(feedsSchema);

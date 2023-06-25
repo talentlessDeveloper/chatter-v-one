@@ -9,13 +9,12 @@ const Login = () => {
   // const [step, setStep] = useState(0);
 
   const { pathname } = useLocation();
-  console.log(pathname);
 
   const navigate = useNavigate();
 
   function renderScreen(step: string) {
     const getPath = step.split("/")[2]; // register | login
-    console.log(getPath);
+
     switch (getPath) {
       case "login":
         return <LoginCard />;

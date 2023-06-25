@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { login, register } from "./authApi";
-import { boolean } from "yup";
+import { fetchUser, login, register } from "./authApi";
 
 type IauthState = {
   [x: string]: string | boolean | any;
@@ -68,6 +67,13 @@ const authSlice = createSlice({
 
         state.loading = false;
         state.error = payload;
+      }
+    );
+    builder.addCase(
+      fetchUser.fulfilled,
+      (state: IauthState, { payload }: any) => {
+        state.loading = false;
+        state.user = payload;
       }
     );
   },

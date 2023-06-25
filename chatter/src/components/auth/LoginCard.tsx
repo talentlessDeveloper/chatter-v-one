@@ -31,7 +31,7 @@ const LoginForm = () => {
     const res = await dispatch(login(values));
     console.log(res);
     if (res.payload.status === "success") {
-      localStorage.setItem(DB_USER, res.payload.data.token);
+      localStorage.setItem(DB_USER, res.payload.data.access_token);
       addToast("Login successful!", { appearance: "success" });
       dispatch(setIsLogin(true));
       navigate("/");
@@ -45,33 +45,33 @@ const LoginForm = () => {
   }, [dispatch, error]);
 
   return (
-    <div className='flex justify-center items-center mt-8 w-full px-10'>
-      <div className='w-full'>
-        <h2 className='text-2xl font-bold mb-4 text-center'>Login</h2>
-        <form className='bg-white  rounded px-8 pt-6 pb-8 mb-4'>
+    <div className="flex justify-center items-center mt-8 w-full px-10">
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <form className="bg-white  rounded px-8 pt-6 pb-8 mb-4">
           <ControlledTextInput<ILogin>
             control={control}
-            name='email'
-            label='email'
-            type='email'
-            placeholder='Enter Your Email'
+            name="email"
+            label="email"
+            type="email"
+            placeholder="Enter Your Email"
           />
           <ControlledTextInput<ILogin>
             control={control}
-            name='password'
-            label='password'
-            type='password'
-            placeholder='Enter Your Password'
+            name="password"
+            label="password"
+            type="password"
+            placeholder="Enter Your Password"
           />
           {error && (
-            <Typography className='text-red-500 text-sm text-center mb-2'>
+            <Typography className="text-red-500 text-sm text-center mb-2">
               {error}
             </Typography>
           )}
-          <div className=''>
+          <div className="">
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full'
-              type='button'
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="button"
               onClick={handleSubmit(onLogin)}
             >
               {loading ? "loading..." : "Sign In"}

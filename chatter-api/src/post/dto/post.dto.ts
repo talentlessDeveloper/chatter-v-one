@@ -1,6 +1,7 @@
 export class CreatePostDto {
   content: string;
   image: string;
+  title: string;
 }
 
 export class UpdatePostDto {

@@ -7,10 +7,19 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
   @Prop()
+  firstName: string;
+
+  @Prop()
+  lastName: string;
+
+  @Prop({ unique: true })
   username: string;
 
   @Prop({ unique: true })
   email: string;
+
+  @Prop({ required: true })
+  role: string;
 
   @Prop()
   password: string;
@@ -21,10 +30,10 @@ export class User {
   @Prop({ type: String, unique: true })
   verificationToken: string;
 
-  @Prop()
+  @Prop({ default: null })
   profilePic: string;
 
-  @Prop()
+  @Prop({ default: null })
   coverPic: string;
 
   @Prop({ type: [String], default: [] })

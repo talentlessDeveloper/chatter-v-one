@@ -11,3 +11,9 @@ export type ISignUp = {
   confirmPassword: string;
   role: string;
 };
+
+export type IcreateFeeds = {
+  content: string;
+  title: string;
+  image: any;
+};

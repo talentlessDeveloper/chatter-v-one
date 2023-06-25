@@ -71,3 +71,23 @@ export const VerifyingUser = createAsyncThunk(
     }
   }
 );
+
+export const fetchUser = createAsyncThunk(
+  "users/get-user-details",
+  async (id, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const result = await httpRequest({
+        BASE_URL: BASE_URL,
+        url: "auth/whoami",
+        method: "GET",
+      });
+
+      if (result.status === "error") {
+        return rejectWithValue(result.message);
+      }
+      return fulfillWithValue(result);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);

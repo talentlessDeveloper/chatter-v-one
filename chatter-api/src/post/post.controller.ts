@@ -107,7 +107,7 @@ export class PostController {
       const newPost = await this.postService.getPost(postId);
       res.status(200).json(newPost);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(503).json({ message: error.message });
     }
   }
 
@@ -175,8 +175,9 @@ export class PostController {
     }
   }
 
+  // to be completed later
   @UseGuards(AuthGuard('jwt'))
-  @Get('feed/get')
+  @Get('/:userId')
   async getUserFeed(@Res() res: Response, @Request() req) {
     try {
       const user = await this.userService.findById(req.user.id);
@@ -185,6 +186,18 @@ export class PostController {
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/')
+  async fetchPost(@Res() res: Response) {
+    try {
+      const posts = await this.postService.getAllPosts();
+
+      res.status(200).json(posts);
+    } catch (error) {
+      res.status(501).json({ message: error.message });
     }
   }
 }

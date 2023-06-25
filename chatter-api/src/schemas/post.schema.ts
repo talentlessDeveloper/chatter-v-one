@@ -17,6 +17,9 @@ export class Post {
   content: string;
 
   @Prop()
+  title: string;
+
+  @Prop()
   image: string;
 
   @Prop({ type: [String], default: [] })

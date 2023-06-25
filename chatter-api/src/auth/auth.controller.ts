@@ -51,11 +51,20 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Res() res: Response) {
     try {
-      const response = await this.authService.login(req.body);
-      console.log(response);
+      const result = await this.authService.login(req.body);
+      const response = {
+        data: result,
+        message: 'login successfully',
+        status: 'success',
+      };
+
       return res.status(201).json(response);
     } catch (error) {
-      return res.status(401).json({ message: error.message });
+      const err = {
+        message: error?.message || 'Invalid email or Password',
+        status: 'error',
+      };
+      return res.status(401).json(err);
     }
   }
 

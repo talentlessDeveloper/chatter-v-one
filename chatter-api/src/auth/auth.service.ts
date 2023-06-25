@@ -42,16 +42,11 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log(process.env?.JWT_SECRET);
-    console.log(user);
     const saveUser = await this.validateUser(user?.email, user?.password);
-    console.log(saveUser);
     if (!saveUser.verified) throw Error('Verify Email');
     const payload = { userId: saveUser.id };
-    console.log(payload);
-
     return {
-      // access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload),
       user: saveUser,
     };
   }

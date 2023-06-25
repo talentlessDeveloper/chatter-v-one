@@ -20,12 +20,14 @@ export class PostService {
   async createPost(userId: string, post: CreatePostDto) {
     try {
       const newPost = new this.PostModel(post);
+
       newPost.author = userId;
       if (newPost.image) {
         newPost.image = (
           await this.cloudinaryService.convertImageToCloudinary(newPost.image)
         ).url;
       }
+      console.log(newPost);
       return newPost.save();
     } catch (error) {
       throw error;
@@ -146,6 +148,7 @@ export class PostService {
   }
 
   async getPost(postId: string) {
+    console.log('inside post');
     try {
       const post = await this.PostModel.findById(postId)
         .populate('author')
@@ -181,6 +184,17 @@ export class PostService {
         })
         .sort({ createdAt: -1 })
         .exec();
+      return posts;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //.sort({ createdAt: -1 }).exec();
+
+  async getAllPosts(): Promise<any[]> {
+    try {
+      const posts = await this.PostModel.find().populate('author');
       return posts;
     } catch (error) {
       throw error;
