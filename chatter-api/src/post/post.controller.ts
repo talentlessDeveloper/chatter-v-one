@@ -33,7 +33,13 @@ export class PostController {
   ) {
     try {
       const newPost = await this.postService.createPost(req.user.id, post);
-      res.status(201).json(newPost);
+      const result = {
+        data: { ...newPost },
+        message: 'Feed Created Successfuly',
+        status: 'success',
+      };
+
+      res.status(201).json(result);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

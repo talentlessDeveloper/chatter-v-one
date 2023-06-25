@@ -6,7 +6,7 @@ export class CloudinaryService {
   async convertImageToCloudinary(image: any): Promise<any> {
     return v2.uploader.upload(
       image,
-      { upload_preset: 'pv5ptgle' },
+      { upload_preset: 'qqdfppib' },
       (error, result) => {
         if (result) {
           return result.url;

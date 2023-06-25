@@ -13,9 +13,13 @@ import {
 } from "../../constant/validation/validation";
 import { createFeeds } from "../../constant/redux/feeds/feedApi";
 import { useAppDispatch } from "../../constant/redux/hooks/index";
+import { useNavigate } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
 
 const AddPost = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { addToast } = useToasts();
   const [post, setPost] = useState(() => EditorState.createEmpty());
 
   // const [postMarkup, setPostMarkup] = useState("");
@@ -43,9 +47,12 @@ const AddPost = () => {
   };
 
   const onSubmit = async (values: IcreateFeeds) => {
-    console.log(values);
     const res = await dispatch(createFeeds(values));
-    console.log(res);
+
+    if (res?.payload?.status === "success") {
+      navigate(-1);
+      addToast(res?.payload?.message, { appearance: "success" });
+    }
   };
 
   return (

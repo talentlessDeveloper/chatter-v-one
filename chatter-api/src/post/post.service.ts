@@ -27,7 +27,7 @@ export class PostService {
           await this.cloudinaryService.convertImageToCloudinary(newPost.image)
         ).url;
       }
-      console.log(newPost);
+
       return newPost.save();
     } catch (error) {
       throw error;
@@ -111,7 +111,7 @@ export class PostService {
       const foundPost = await this.PostModel.findById(postId);
       const newComment = await this.commentService.postComment(userId, comment);
       const updatedPost = await foundPost.updateOne({
-        $push: { comments: newComment.id },
+        $push: { comments: newComment.id, content: newComment.content },
       });
       return newComment;
     } catch (error) {
@@ -194,7 +194,10 @@ export class PostService {
 
   async getAllPosts(): Promise<any[]> {
     try {
-      const posts = await this.PostModel.find().populate('author');
+      const posts = await this.PostModel.find()
+        .populate('author')
+        .sort({ createdAt: -1 })
+        .exec();
       return posts;
     } catch (error) {
       throw error;
