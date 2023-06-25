@@ -30,7 +30,7 @@ export const register = createAsyncThunk(
     try {
       const result = await httpRequest({
         BASE_URL: BASE_URL,
-        url: "auth/signup",
+        url: "auth/register",
         method: "POST",
         body: registerData,
         needToken: false,

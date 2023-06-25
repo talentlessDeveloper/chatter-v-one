@@ -38,35 +38,42 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className='flex justify-center items-center mt-8 '>
-      <div className='w-full'>
-        <h2 className='text-2xl font-bold mb-4'>Register</h2>
-        <form className='bg-white  rounded px-8 pt-6 pb-8 mb-4'>
-          <div className=''>
-            <div className='grid grid-cols-2 gap-x-4'>
+    <div className="flex justify-center items-center mt-8 ">
+      <div className="w-full">
+        <h2 className="text-2xl font-bold mb-4">Register</h2>
+        <form className="bg-white  rounded px-8 pt-6 pb-8 mb-4">
+          <div className="">
+            <div className="grid grid-cols-2 gap-x-4">
               <ControlledTextInput<ISignUp>
                 control={control}
-                name='firstName'
-                label='First Name'
-                placeholder='Enter your First Name'
+                name="firstName"
+                label="First Name"
+                placeholder="Enter your First Name"
               />
               <ControlledTextInput<ISignUp>
                 control={control}
-                name='lastName'
-                label='Last Name'
-                placeholder='Enter Your Last Name'
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter Your Last Name"
               />
             </div>
+
             <ControlledTextInput<ISignUp>
               control={control}
-              name='email'
-              label='Email'
-              placeholder='Enter Your Email'
+              name="username"
+              label="Username"
+              placeholder="Enter a username of your choice"
             />
             <ControlledTextInput<ISignUp>
               control={control}
-              name='role'
-              label='You are joining as?'
+              name="email"
+              label="Email"
+              placeholder="Enter Your Email"
+            />
+            <ControlledTextInput<ISignUp>
+              control={control}
+              name="role"
+              label="You are joining as?"
               isSelect
               selectItem={[
                 {
@@ -78,33 +85,33 @@ const RegisterForm = () => {
                   value: "writer",
                 },
               ]}
-              placeholder='Reader'
+              placeholder="Reader"
             />
             <ControlledTextInput<ISignUp>
               control={control}
-              name='password'
-              label='Password'
-              placeholder='Enter Your Password'
-              type='password'
+              name="password"
+              label="Password"
+              placeholder="Enter Your Password"
+              type="password"
             />
             <ControlledTextInput<ISignUp>
               control={control}
-              name='confirmPassword'
-              label='Confirm Password'
-              placeholder='Confirm Your Password'
-              type='password'
+              name="confirmPassword"
+              label="Confirm Password"
+              placeholder="Confirm Your Password"
+              type="password"
             />
           </div>
 
           {error && (
-            <Typography className='text-red-500 text-sm text-center mb-2'>
+            <Typography className="text-red-500 text-sm text-center mb-2">
               {error}
             </Typography>
           )}
-          <div className='mb-3'>
+          <div className="mb-3">
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full'
-              type='button'
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="button"
               onClick={handleSubmit(onRegister)}
             >
               {loading ? "loading..." : "Create Account"}
@@ -112,14 +119,14 @@ const RegisterForm = () => {
           </div>
           <div>
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full'
-              type='button'
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="button"
             >
               Sign Up With Google
             </button>
             <button
-              className='block mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full'
-              type='button'
+              className="block mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="button"
             >
               {" "}
               Sign Up With LinkedIn

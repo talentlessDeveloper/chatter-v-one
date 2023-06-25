@@ -15,12 +15,13 @@ const loginSchema = yup.object({
 export const loginResolver = yupResolver(loginSchema);
 
 export const registerDefaultValues: ISignUp = {
-  email: "",
-  firstName: "",
-  lastName: "",
-  password: "",
+  firstName: "Badmus",
+  lastName: "ayobami",
+  username: "badbaby",
+  email: "haryobamy.badmus@gmail.com",
+  password: "olawole27",
   confirmPassword: "",
-  role: "",
+  role: "writer",
 };
 
 const registerSchema = yup.object({

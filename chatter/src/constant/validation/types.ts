@@ -10,6 +10,7 @@ export type ISignUp = {
   password: string;
   confirmPassword: string;
   role: string;
+  username: string;
 };
 
 export type IcreateFeeds = {
