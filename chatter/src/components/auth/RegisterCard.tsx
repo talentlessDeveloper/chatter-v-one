@@ -29,11 +29,12 @@ const RegisterForm = () => {
     console.log(values);
     const res = await dispatch(register(values));
     console.log(res);
-    if (res.payload.token) {
-      localStorage.setItem(DB_USER, res.payload.token);
+    if (res.payload.status === "success") {
+      // localStorage.setItem(DB_USER, res.payload.token);
       addToast("registration successful!", { appearance: "success" });
-      dispatch(setIsLogin(true));
-      navigate("/");
+      addToast("Please check email to verify account", { appearance: "info" });
+      // dispatch(setIsLogin(true));
+      navigate("/auth/login");
     }
   };
 

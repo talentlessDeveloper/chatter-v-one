@@ -26,8 +26,19 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  regsiterUser(@Body() user: CreateUserDto): Promise<User> {
-    return this.userService.addUser(user);
+  async regsiterUser(
+    @Body() user: CreateUserDto,
+    @Res() res: Response,
+  ): Promise<any> {
+    const savedUSer = await this.userService.addUser(user);
+
+    const result = {
+      data: { ...savedUSer },
+      message: 'Registration Successful',
+      status: 'success',
+    };
+
+    return res.status(201).json(result);
   }
 
   @Get('verify/:userId/:verificationToken')
